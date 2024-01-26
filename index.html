@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- import jQuery -->
+    <script type="text/javascript" src="./3rdparty/jquery.min.js"></script>
+
+    <!-- import CryptoJs -->
+    <script type="text/javascript" src="./3rdparty/crypto-js.min.js"></script>
+
+    <!-- import Bootstrap JS -->
+    <script type="text/javascript" src="./3rdparty/bootstrap.min.js"></script>
+
+    <!-- import Bootstrap CSS -->
+    <link rel="stylesheet" href="./3rdparty/bootstrap.min.css">
+
+    <!-- import out extension controller script, middle man between HTML & downloader itself -->
+    <script type="module" src="./js/main.js"></script>
+</head>
+
+
+<body id="page-top">
+    <section class="main-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col">
+                    <h2 class="text-white mb-4">ezWuolahDownloader <h3 id="welcome-version"></h3>
+                    </h2>
+
+                    <!-- login form -->
+                    <div class="d-none row input-group" id="login-form">
+                        <div class="col">
+                            <input class="form-control" id="email" type="email" placeholder="Enter email address..."
+                                aria-label="Enter email address..." data-sb-validations="required,email" />
+                            <input class="form-control" id="password" type="password" placeholder="Enter password..."
+                                aria-label="Enter password..." data-sb-validations="required,password" />
+                        </div>
+
+                        <div class="col-auto">
+                            <button class="btn btn-primary disabled" id="login-form-button">
+                                Login
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- download form-->
+                    <form class="d-none row input-group" id="download-file-form">
+                        <div class="col-sm">
+                            <input class="form-control" id="wuolahFileId" type="text"
+                                placeholder="Paste Woulah document ID or URL" aria-label="ID or URL" required />
+                        </div>
+
+                        <button class="btn btn-primary" id="download-form-button">
+                            Download
+                        </button>
+                    </form>
+
+                    <button class="d-none col-sm btn btn-primary" id="logout-button">Logout</button>
+                </div>
+
+                <!-- Toast -->
+                <div id="toast-message-div" class="toast">
+                    <div class="toast-header">
+                        <strong id="toast-tittle" class="mr-auto">Eww, you should not see this</strong>
+                        <small id="toast-small"></small>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+
+                    <div id="toast-message" class="toast-body">Eww, you should not see this...</div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    </div>
+
+</body>
+
+</html>
