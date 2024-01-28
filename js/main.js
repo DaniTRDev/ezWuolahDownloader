@@ -1,38 +1,26 @@
-import { loginButtonHandler, logoutButtonHandler, downloadButtonHandler } from "./htmlHandlers.js";
-import { getWuolahFileIdFromStr } from "./utils.js";
-import { isUserLoged } from "./wuolah/api.js";
-
-const aesKey = "2e35f242a46d67eeb74aabc37d5e5d05";
-const version = chrome.runtime.getManifest().version;
-
-$(function()
+export function onNavBarChange(name)
 {
-    if (isUserLoged())
-    {
-        $("#download-file-form").show();
-        $("#logout-button").show();
-    }
-    else
-    {
-        $("#login-form").show();
-    }
+    $("section").hide(); //hide all sections
+    $("#" + name + "-section").show(); //show the section we are interested in
+}
 
-    $("#login-form-button").bind("click", function()
-    {
-        let email = $("input[id=email]").val();
-        let password = $("input[id=password]").val();
+$(function ()
+{
+    const version = chrome.runtime.getManifest().version;
+    $("#welcome").append("ezDownloader " + version);
 
-        loginButtonHandler(email, password);
+    $("#navbar-nav-home").click(function ()
+    {
+        onNavBarChange("home");
     });
 
-    $("#logout-button").bind("click", function()
+    $("#navbar-nav-wuolah").click(function ()
     {
-        logoutButtonHandler();
+        onNavBarChange("wuolah");
     });
 
-     $("#login-form-button").bind("click", function()
+    $("#navbar-nav-mediafire").click(function ()
     {
-        let urlOrId = $("input[id=wuolahFileId]").val();
-        downloadButtonHandler(getWuolahFileIdFromStr(urlOrId));
+        onNavBarChange("mediafire");
     });
 });

@@ -2,7 +2,13 @@
 <html lang="en">
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width initial-scale=1">
+
+    <!-- import BootstrapCSS -->
+    <link rel="stylesheet" href="./3rdparty/bootstrap.min.css">
+
+    <!-- import Bootstrap theme -->
+    <link rel="stylesheet" href="./3rdparty/bootstrap.rtl.min.css">
 
     <!-- import jQuery -->
     <script type="text/javascript" src="./3rdparty/jquery.min.js"></script>
@@ -10,74 +16,128 @@
     <!-- import CryptoJs -->
     <script type="text/javascript" src="./3rdparty/crypto-js.min.js"></script>
 
-    <!-- import Bootstrap JS -->
+    <!-- import PopperJS -->
+    <script type="text/javascript" src="./3rdparty/popper.min.js"></script>
+
+    <!-- import BootstrapJS-->
     <script type="text/javascript" src="./3rdparty/bootstrap.min.js"></script>
 
-    <!-- import Bootstrap CSS -->
-    <link rel="stylesheet" href="./3rdparty/bootstrap.min.css">
+    <script type="module" src="./js/wuolahHtml.js"></script>
 
     <!-- import out extension controller script, middle man between HTML & downloader itself -->
     <script type="module" src="./js/main.js"></script>
 </head>
 
 
-<body id="page-top">
-    <section class="main-section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col">
-                    <h2 class="text-white mb-4">ezWuolahDownloader <h3 id="welcome-version"></h3>
-                    </h2>
+<body style="width:400px; height:400px;">
 
-                    <!-- login form -->
-                    <div class="d-none row input-group" id="login-form">
-                        <div class="col">
-                            <input class="form-control" id="email" type="email" placeholder="Enter email address..."
-                                aria-label="Enter email address..." data-sb-validations="required,email" />
-                            <input class="form-control" id="password" type="password" placeholder="Enter password..."
-                                aria-label="Enter password..." data-sb-validations="required,password" />
-                        </div>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+        <div class="container-fluid">
 
-                        <div class="col-auto">
-                            <button class="btn btn-primary disabled" id="login-form-button">
-                                Login
-                            </button>
-                        </div>
-                    </div>
+            <!-- navbar header -->
+            <a class="navbar-brand" id="welcome"></a>
+            <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                    <!-- download form-->
-                    <form class="d-none row input-group" id="download-file-form">
-                        <div class="col-sm">
-                            <input class="form-control" id="wuolahFileId" type="text"
-                                placeholder="Paste Woulah document ID or URL" aria-label="ID or URL" required />
-                        </div>
-
-                        <button class="btn btn-primary" id="download-form-button">
-                            Download
-                        </button>
-                    </form>
-
-                    <button class="d-none col-sm btn btn-primary" id="logout-button">Logout</button>
-                </div>
-
-                <!-- Toast -->
-                <div id="toast-message-div" class="toast">
-                    <div class="toast-header">
-                        <strong id="toast-tittle" class="mr-auto">Eww, you should not see this</strong>
-                        <small id="toast-small"></small>
-                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
-                            <span>&times;</span>
-                        </button>
-                    </div>
-
-                    <div id="toast-message" class="toast-body">Eww, you should not see this...</div>
-                </div>
-
+            <!-- navbar elements-->
+            <div class="navbar-collapse collapse" id="navbarColor01" style="">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="navbar-nav-home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="navbar-nav-wuolah">Wuolah</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="navbar-nav-mediafire">Mediafire</a>
+                    </li>
+                </ul>
             </div>
+
         </div>
+    </nav>
+
+    <!-- sections -->
+
+    <!-- home -->
+    <section style="display:none" class="container mt-3 justify-content-center" id="home-section">
+        <p>HOME</p>
     </section>
 
-    </div>
+    <!-- wuolah -->
+    <section style="display:none" class="container mt-3 justify-content-center" id="wuolah-section">
+
+        <!-- login form -->
+        <div style="display:none" id="login-form">
+            <div class="form-group mb-3">
+                <input type="text"
+                       id="email"
+                       class="form-control mt-3"
+                       placeholder="Email"
+                       aria-label="Email"
+                       aria-describedby="login-form-button">
+
+                <input type="password"
+                       id="password"
+                       class="form-control mt-3"
+                       placeholder="Password"
+                       aria-label="Password"
+                       aria-describedby="login-form-button">
+
+                <button class="btn btn-primary mt-3" id="login-form-button">
+                    Login
+                </button>
+            </div>
+        </div>
+
+        <!-- download form-->
+        <div style="display:none" id="download-form">
+            <div class="form-group mb-3">
+                <div class="input-group mt-3">
+                    <input type="text"
+                           id="wuolahFileId"
+                           class="form-control"
+                           placeholder="ID or URL"
+                           aria-label="ID or URL"
+                           aria-describedby="download-file-form-button">
+
+                    <button class="btn btn-primary" id="download-file-form-button">
+                        Download
+                    </button>
+                </div>
+                <div class="input-group mt-3">
+                    <input type="text"
+                           id="wuolahFolderId"
+                           class="form-control"
+                           placeholder="ID"
+                           aria-label="ID"
+                           aria-describedby="download-folder-form-button">
+
+                    <button class="btn btn-primary" id="download-folder-form-button">
+                        Download(folder)
+                    </button>
+                </div>
+                <div class="input-group mt-3">
+                    <button class="btn btn-secondary" id="logout-button">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- mediafire -->
+    <section style="display:none" class="container mt-3 justify-content-center" id="mediafire-section">
+        <h4> fkjdo`fgf</h4>
+        <h4> fkjdo`fgf</h4>
+        <h4> fkjdo`fgf</h4>
+        <h4> fkjdo`fgf</h4>
+        <h4> fkjdo`fgf</h4>
+        <h4> fkjdo`fgf</h4>
+    </section>
 
 </body>
 

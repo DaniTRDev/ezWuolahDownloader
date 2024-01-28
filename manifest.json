@@ -1,12 +1,15 @@
 {
-    "manifest_version": 3,
-    "name": "ezWuolahDownloader",
-    "description": "A no-ad downloader for Wuolah",
-    "permissions": ["scripting", "activeTab"],
-    "version": "1.0.0",
-    "action": 
-    {
-      "default_popup": "index.html",
-      "default_icon": "icon.png"
-    }
+  "manifest_version": 3,
+  "name": "ezDownloader",
+  "description": "A no-ad downloader",
+  "permissions": [
+    "downloads",
+    "scripting",
+    "activeTab"
+  ],
+  "version": "1.0.0",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "icon.png"
   }
+}

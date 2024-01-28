@@ -10,14 +10,17 @@ export class wuolahApiRequest
         this.url = "https://api.wuolah.com/";
     }
 
-    login(email, id)
+    login(email, password)
     {
         return new Promise((resolve, reject) => 
         {
+            if (email === "" || password === "")
+                return reject("Invalid password or username!");
+
             this.body = JSON.stringify
             ({ 
                 "account": email, 
-                "password": id 
+                "password": password 
             });
     
             this.headers = 
@@ -27,14 +30,65 @@ export class wuolahApiRequest
                 headers: 
                 {
                    "Content-Type": "application/json",
-                    "Content-length": this.body.length
+                   "Content-length": this.body.length
                 },
-                body: JSON.stringify(this.body)
+                body: this.body
             }
-            this.path = "/login";
-            fetch(this.url +  this.path, this.headers)
-            .then(res => res.json().then(json => resolve(json.accessToken, json.expires)))
+            this.path = "login";
+            fetch(this.url + this.path, this.headers)
+            .then(res => res.json())
+            .then(json => resolve(json))
             .catch(e => reject(e));
+        });
+    }
+
+    getUploadMeta(uploadId)
+    {
+        return new Promise((resolve, reject) => 
+        {
+            if (uploadId === undefined)
+                reject("Given uploadId is not valid"); 
+
+            this.headers =
+            {
+                method: "GET",
+                mode: "cors",
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + getEncryptedCookie("token")
+                }
+            }
+            this.path = "/v2/uploads/" + uploadId.toString();
+            fetch(this.url + this.path, this.headers)
+                .then(res => res.json())
+                .then(json => resolve(json))
+                .catch(e => reject(e));
+        });
+    }
+
+    getDocumentMeta(documentId)
+    {
+        return new Promise((resolve, reject) =>
+        {
+            if (documentId === undefined)
+                reject("Given uploadId is not valid");
+
+            this.headers =
+            {
+                method: "GET",
+                mode: "cors",
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + getEncryptedCookie("token")
+                }
+            }
+            this.path = "/v2/documents?sort=-createdAt&filter[uploadId]=" + documentId.toString();
+            fetch(this.url + this.path, this.headers)
+                .then(res => res.json())
+                .then(json => resolve(json))
+                .catch(e => reject(e));
         });
     }
 
@@ -42,8 +96,11 @@ export class wuolahApiRequest
     {
         return new Promise((resolve, reject) => 
         {
-            this.body = 
-            { 
+            if (fileId === undefined || machineId === undefined)
+                reject("Given fileID or machineId was not valid");
+
+            this.body = JSON.stringify
+            ({ 
                 "adblockDetected": false,
                 "noAdsWithCoins": false,
                 "fileId": fileId,
@@ -55,57 +112,69 @@ export class wuolahApiRequest
                 },
                 "machineId": machineId,
                 "referralCode": "",
-                "ads": 
-                [
-                    {
-                        "lineItemId": 1,
-                        "ubication": 33,
-                        "files": 
-                        {
-                            "imgUrl": ""
-                        },
-                        "viewUrl": "",
-                        "clickUrl": "",
-                        "urlPixel": "",
-                        "creativeId": 1,
-                        "orderId": 3358957,
-                        "sponsored": 1
-                    },
-                ],
+                "ads": [], //having this array empty makes wuolah embed its own ads into the .pdf
                 "ubication17ExpectedPubs": 0,
-                "ubication1ExpectedPubs": 1,
-                "ubication2ExpectedPubs": 1,
-                "ubication3ExpectedPubs": 4,
+                "ubication1ExpectedPubs": 0,
+                "ubication2ExpectedPubs": 0,
+                "ubication3ExpectedPubs": 0,
                 "ubication17RequestedPubs": 0,
-                "ubication1RequestedPubs": 1,
-                "ubication2RequestedPubs": 1,
-                "ubication3RequestedPubs": 4
-            };
-    
-            this.headers = JSON.stringify
-            ({
+                "ubication1RequestedPubs": 0,
+                "ubication2RequestedPubs": 0,
+                "ubication3RequestedPubs": 0
+            });
+
+            this.headers = 
+            {
                 method: "POST",
                 mode: "cors",
-                headers: 
+                headers:
                 {
-                   "Content-Type": "application/json",
-                    "Content-length": this.body.length
+                    "Content-Type": "application/json",
+                    "Content-length": this.body.length,
+                    "Authorization": "Bearer " + getEncryptedCookie("token")
                 },
-                body: JSON.stringify(this.body)
-            });
-            this.path = "/v2/download";
-
-            fetch(this.url +  this.path, this.headers)
-            .then(res => res.json().then(json => resolve(json.url)))
+                body: this.body
+            };
+            this.path = "v2/download";
+            fetch(this.url + this.path, this.headers)
+            .then(res => res.json())
+            .then(json => resolve(json))
             .catch(e => reject(e));
+        });
+    }
+
+    downloadFolder(folderId)
+    {
+        return new Promise((resolve, reject) =>
+        {
+            if (folderId === undefined)
+                reject("Given folderId was not valid");
+
+            //get meta data of the folder itself
+            this.getUploadMeta(folderId)
+            .then(folderMeta =>
+            {
+                if (!folderMeta.isFolder || folderMeta.numFiles == 0)
+                    reject("Upload is not a folder");
+
+                //get meta data of the documents inside the folder
+                this.getDocumentMeta(folderId)
+                .then((documentsMeta) =>
+                {
+                    let fileIds = [];
+                    for (let i = 0; i < folderMeta.numFiles; i++)
+                        fileIds.push(documentsMeta.data[i].id);
+
+                    resolve({ numFiles: folderMeta.numFiles, fileIds: fileIds });
+                })
+                .catch(e => reject("Invalid folder elements metadata : " + e));
+            })
+            .catch(e => reject("Could not download folder: " + e));
         });
     }
 }
 
 export function isUserLoged()
 {
-    let tokenExpire = getEncryptedCookie("expire");
-    let tokenDate = new Date(tokenExpire);
-    
-    return (new Date()) < tokenDate;
+    return getEncryptedCookie("token") != "";
 }

@@ -6,16 +6,22 @@ export function getWuolahFileIdFromStr(str)
         if (str.includes("wuolah.com")) //url
         {
             idStr = "";
-            for(let i = str.indexOf("?") - 1; (i > 0); i--)
+            for(let i = (str.indexOf("?") - 1); (i > 0); i--)
             {
-                if (!isNaN(strCharacter - parseFloat(strCharacter)))
-                    reject("Given string does not have a valid format");
+                let ch = str[i];
 
-                idStr = str[i] + idStr;
-            }    
+                if (isNaN(ch - parseFloat(ch)))
+                    break;
+
+                idStr = ch + idStr;
+            }  
+
+            if (idStr.length == 0)
+                reject("Given string does not have a valid format");
+
         }
 
-        return parseInt(idStr);
+        resolve(parseInt(idStr));
     });
 }
 
@@ -38,7 +44,14 @@ export function getEncryptedCookie(name)
     return "";
 }
 
-export function setEncryptedCookie(name, data)
-{
-    document.cookie += name + "=" + CryptoJS.AES.encrypt(data, AES_KEY).toString();
+export function setEncryptedCookie(name, data, expirationDateStr) {
+   
+    let cookie = name + "=" + CryptoJS.AES.encrypt(data, AES_KEY).toString();
+
+    if (expirationDateStr !== undefined)
+    { 
+        let date = new Date(expirationDateStr);
+        cookie += "; expires=" + date.toUTCString();
+    }
+    document.cookie = cookie;
 }
